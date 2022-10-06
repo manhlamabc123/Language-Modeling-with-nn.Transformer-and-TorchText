@@ -4,8 +4,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+from typing import Tuple
 
-from constants import DEVICE
+from constants import BPTT, DEVICE
 
 def data_process(raw_text_iter: dataset.IterableDataset, vocab, tokenizer) -> Tensor:
     # Converts raw text into a flat Tensor
@@ -26,3 +27,15 @@ def batchify(data: Tensor, bsz: int) -> Tensor:
     data = data[:seq_len * bsz]
     data = data.view(bsz, seq_len).t().contiguous()
     return data.to(DEVICE)
+
+def get_batch(source: Tensor, i: int) -> Tuple[Tensor, Tensor]:
+    '''
+    Args:
+        source: Tensor, shape [full_seq_len, batch_size]
+    Returns:
+        tuple (data, target), where data has shape [seq_len, batch_size] and target has shape [seq_len * batch_size]
+    '''
+    seq_len = min(BPTT, len(source) - 1 - i)
+    data = source[i:i+seq_len]
+    target = source[i+1:i+1+seq_len].reshape(-1)
+    return data, target
