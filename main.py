@@ -20,3 +20,6 @@ test_data = data_process(test_iter)
 train_data = batchify(train_data, BATCH_SIZE)
 val_data = batchify(val_data, EVAL_BATCH_SIZE)
 test_data = batchify(test_data, EVAL_BATCH_SIZE)
+
+n_tokens = len(vocab)
+
