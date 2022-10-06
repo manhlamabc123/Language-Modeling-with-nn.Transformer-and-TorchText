@@ -6,16 +6,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import math
-from constants import BPTT, DEVICE
+from constants import BPTT, DEVICE, LEARNING_RATE
 from data_process import get_batch
 
 from transformer_model import generate_square_subsequent_mask
 
-def train(model: nn.Module, train_data, n_tokens, epoch, learning_rate = 5.0) -> None:
-    criterion = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(model.parameters(), lr=learning_rate)
-    scheduler = optim.lr_scheduler.StepLR(optimizer, 1.0, gamma=0.95)
-
+def train(model: nn.Module, train_data, n_tokens, epoch, criterion, optimizer, scheduler, learning_rate = LEARNING_RATE) -> None:
     model.train() # Turn on train mode?
     total_loss = 0
     log_interval = 200 # ???

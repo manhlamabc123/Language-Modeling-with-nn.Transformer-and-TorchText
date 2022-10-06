@@ -1,11 +1,20 @@
 from lib2to3.pgen2.tokenize import tokenize
+from tkinter import N
 from torchtext.datasets import WikiText2
 from torchtext.data.utils import get_tokenizer
 from torchtext.vocab import build_vocab_from_iterator
-from constants import BATCH_SIZE, D_HID, DEVICE, DROPOUT, EMBEDDING_SIZE, EVAL_BATCH_SIZE, N_HEAD, N_LAYERS
-
+from constants import BATCH_SIZE, best_model, BEST_VAL_LOSS, D_HID, DEVICE, DROPOUT, EMBEDDING_SIZE, EVAL_BATCH_SIZE, LEARNING_RATE, N_HEAD, N_LAYERS, EPOCHS
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
 from data_process import data_process, batchify
 from transformer_model import TransformerModel
+import time
+from train import train
+from evaluate import evaluate
+import math
+import copy
 
 train_iter = WikiText2(split='train')
 tokenize = get_tokenizer('basic_english')
@@ -24,3 +33,30 @@ test_data = batchify(test_data, EVAL_BATCH_SIZE)
 
 n_tokens = len(vocab)
 model = TransformerModel(n_tokens, EMBEDDING_SIZE, N_HEAD, D_HID, N_LAYERS, DROPOUT).to(DEVICE)
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.SGD(model.parameters(), lr=LEARNING_RATE)
+scheduler = optim.lr_scheduler.StepLR(optimizer, 1.0, gamma=0.95)
+
+for epoch in range(1, EPOCHS + 1):
+    epoch_start_time = time.time()
+    train(model, train_data, n_tokens, epoch, criterion)
+    val_loss = evaluate(model, val_data)
+    val_ppl = math.exp(val_loss)
+    elapsed = time.time() - epoch_start_time
+    print('-' * 89)
+    print(f'| end of epoch {epoch:3d} | time: {elapsed:5.2f}s | '
+          f'valid loss {val_loss:5.2f} | valid ppl {val_ppl:8.2f}')
+    print('-' * 89)
+
+    if val_loss < BEST_VAL_LOSS:
+        BEST_VAL_LOSS = val_loss
+        best_model = copy.deepcopy(model)
+
+    scheduler.step()
+
+test_loss = evaluate(best_model, test_data)
+test_ppl = math.exp(test_loss)
+print('=' * 89)
+print(f'| End of training | test loss {test_loss:5.2f} | '
+      f'test ppl {test_ppl:8.2f}')
+print('=' * 89)
