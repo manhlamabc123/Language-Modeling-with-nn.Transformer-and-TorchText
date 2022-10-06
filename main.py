@@ -17,15 +17,15 @@ import math
 import copy
 
 train_iter = WikiText2(split='train')
-tokenize = get_tokenizer('basic_english')
-vocab = build_vocab_from_iterator(map(tokenize, train_iter), specials=['<unk>'])
+tokenizer = get_tokenizer('basic_english')
+vocab = build_vocab_from_iterator(map(tokenizer, train_iter), specials=['<unk>'])
 vocab.set_default_index(vocab['<unk>'])
 
 # Data Processing
 train_iter, val_iter, test_iter = WikiText2()
-train_data = data_process(train_iter)
-val_data = data_process(val_iter)
-test_data = data_process(test_iter)
+train_data = data_process(train_iter, vocab, tokenizer)
+val_data = data_process(val_iter, vocab, tokenizer)
+test_data = data_process(test_iter, vocab, tokenizer)
 
 train_data = batchify(train_data, BATCH_SIZE)
 val_data = batchify(val_data, EVAL_BATCH_SIZE)
@@ -39,7 +39,7 @@ scheduler = optim.lr_scheduler.StepLR(optimizer, 1.0, gamma=0.95)
 
 for epoch in range(1, EPOCHS + 1):
     epoch_start_time = time.time()
-    train(model, train_data, n_tokens, epoch, criterion)
+    train(model, train_data, n_tokens, epoch, criterion, optimizer, scheduler)
     val_loss = evaluate(model, val_data)
     val_ppl = math.exp(val_loss)
     elapsed = time.time() - epoch_start_time

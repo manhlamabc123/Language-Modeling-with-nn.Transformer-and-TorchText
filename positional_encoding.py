@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch import Tensor
 
-class PositinalEncoding(nn.Model):
+class PositinalEncoding(nn.Module):
     def __init__(self, d_model: int, dropout: float=0.1, max_len: int=5000):
         super().__init__()
         self.dropout = nn.Dropout(p=dropout)

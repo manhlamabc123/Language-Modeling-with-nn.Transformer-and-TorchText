@@ -32,7 +32,7 @@ def train(model: nn.Module, train_data, n_tokens, epoch, criterion, optimizer, s
         nn.utils.clip_grad_norm_(model.parameters(), 0.5)
         optimizer.step()
 
-        totatl_loss += loss.item()
+        total_loss += loss.item()
         if batch % log_interval == 0 and batch > 0:
             learning_rate = scheduler.get_last_lr()[0]
             ms_per_batch = (time.time() - start_time) * 1000 / log_interval
