@@ -40,6 +40,6 @@ class TransformerModel(nn.Module):
         output = self.decoder(output)
         return output
 
-    def generate_square_subsequent_mask(sz: int) -> Tensor:
+def generate_square_subsequent_mask(sz: int) -> Tensor:
         # Generates an upper-triangluar matrix of -inf, with zeros on diag
         return torch.triu(torch.ones(sz, sz) * float('-inf'), diagonal=1)
