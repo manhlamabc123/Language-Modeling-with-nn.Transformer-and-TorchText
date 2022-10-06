@@ -1,12 +1,8 @@
-from lib2to3.pgen2.tokenize import tokenize
-from tkinter import N
 from torchtext.datasets import WikiText2
 from torchtext.data.utils import get_tokenizer
 from torchtext.vocab import build_vocab_from_iterator
 from constants import BATCH_SIZE, best_model, BEST_VAL_LOSS, D_HID, DEVICE, DROPOUT, EMBEDDING_SIZE, EVAL_BATCH_SIZE, LEARNING_RATE, N_HEAD, N_LAYERS, EPOCHS
-import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.optim as optim
 from data_process import data_process, batchify
 from transformer_model import TransformerModel

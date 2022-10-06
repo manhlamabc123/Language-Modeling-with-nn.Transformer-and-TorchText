@@ -1,7 +1,4 @@
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 BATCH_SIZE = 20
@@ -14,5 +11,6 @@ N_HEAD = 2
 DROPOUT = 0.2
 BEST_VAL_LOSS = float('inf')
 EPOCHS = 3
-best_model = None
 LEARNING_RATE = 5.0
+
+best_model = None

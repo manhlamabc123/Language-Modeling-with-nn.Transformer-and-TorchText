@@ -1,6 +1,5 @@
 from torch import nn, Tensor
 import torch
-
 from transformer_model import generate_square_subsequent_mask
 from constants import *
 from data_process import get_batch

@@ -1,9 +1,6 @@
 import math
-from mimetypes import init
-
 import torch
 from torch import nn, Tensor
-import torch.nn.functional as F
 from torch.nn import TransformerEncoder, TransformerEncoderLayer
 from positional_encoding import PositinalEncoding
 

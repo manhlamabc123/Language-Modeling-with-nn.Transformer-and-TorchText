@@ -1,10 +1,5 @@
-import copy
-from sched import scheduler
 import time
-import torch
 import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
 import math
 from constants import BPTT, DEVICE, LEARNING_RATE
 from data_process import get_batch
